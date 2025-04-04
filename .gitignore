@@ -1,0 +1,5 @@
+**/worlds/
+**/allowed_codepoints.json
+**/generate_codepoints.js
+**/imgs
+src/tools/java/
