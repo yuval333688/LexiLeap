@@ -7,7 +7,31 @@ let isRunning = false;
 window.onload = function () {
     user_typing = document.querySelector('.user_typing');
     timeDisplay = document.querySelector('.Performance_time_number');
+    document.addEventListener('keydown', InputHandling);
 }
+
+
+
+function InputHandling( event)
+{
+    
+    if (isRunning) {
+        // Check if the key is a printable character (not a control key like Shift, Alt, etc.)
+       
+        if (event.key.length === 1) {
+            // Add the typed character to the user_typing element
+           
+            user_typing.textContent += event.key;
+        }  
+        if (event.key === 'Enter') 
+            user_typing.textContent += '↵';
+        if (event.key === 'Backspace')//cut last letter
+        user_typing.textContent = user_typing.textContent.slice(0, -1);
+
+    }
+}
+
+
 
 function updateTimeDisplay() {
     // Format the time as MM:SS
