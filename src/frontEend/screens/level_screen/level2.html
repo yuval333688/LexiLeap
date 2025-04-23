@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>level_screen</title>
+    <style>
+        body {
+            display: flex;
+            flex-wrap: wrap;
+
+            justify-content: center;
+            padding: 10%;
+            background-color: Gainsboro;
+            gap: 10px;
+
+        }
+
+        .level {
+            background-color: lightcyan;
+            width: calc(20% - 10px);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 10%;
+
+            cursor: pointer;
+
+        }
+
+        .level .icon {
+            width: 20%;
+            height: 20%;
+            margin: 10%;
+
+
+
+
+        }
+
+        .level .id {
+            font-size: 30px;
+            color: black;
+            font-weight: bold;
+            margin-top: 10px;
+
+        }
+
+        .level .score {
+            font-size: 20px;
+            color: black;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .level .stars {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+
+            width: 100%;
+            height: 10%;
+            gap: 5px;
+        }
+
+        .starsIcon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .starsIcon svg {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+</body>
+<template>
+    <svg xmlns="http://www.w3.org/2000/svg" class="CheckMarkIcon" viewBox="0 0 10 10"
+        style="stroke:Aquamarine ;stroke-width:1">
+
+
+        <line x1="0.4" y1="6.8" x2="4.4" y2="9.3" />
+        <line x1="3.9" y1="9.1" x2="9.65" y2="0.35" />
+
+
+    </svg>
+
+
+    <div class="starsIcon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+            <polygon points="5,1 6,4 9,4 6.5,6 7.5,9 5,7.5 2.5,9 3.5,6 1,4 4,4" fill="gold" />
+        </svg>
+    </div>
+
+
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="axeIcon" viewBox="0 0 10 10" fill="OrangeRed">
+        <polygon points=" 0,0.5 0.5,0 10,9.5 9.5,10 " />
+        <polygon points=" 9.5,0 10,0.5 0.5,10 0,9.5 " />
+    </svg>
+
+
+
+    <div class="level">
+        <div class="icon"> </div>
+
+        <div class="id">7</div>
+        <div class="score">score 1000</div>
+        <div class="stars"></div>
+
+    </div>
+</template>
+
+
+
+
+
+
+<script>
+    onload = function () {
+        createLevelElement();
+    }
+    let levelsData = [];
+
+
+
+
+    function setEqualHeightWidth(element) {
+        // קבל את הרוחב הנוכחי (כולל padding)
+        const width = element.offsetWidth;
+        // הגדר את הגובה להיות שווה לרוחב
+        element.style.height = width + 'px';
+    }
+
+    function getRandomInteger(min = 0, max = 1000) {
+        // מחזיר מספר שלם רנדומלי בין min ל-max (כולל)
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function createLevelElement() {
+        let scoreRand;
+        for (let i = 0; i < 23; i++) {
+            scoreRand = getRandomInteger(600, 1000);
+
+            let newData = { score: scoreRand, locked: !(scoreRand >= 600) };
+            levelsData.push(newData);
+        }
+        scoreRand = 0;
+        for (let i = 0; i < 20; i++) {
+            let newData = { score: scoreRand, locked: !(scoreRand >= 600) };
+            levelsData.push(newData);
+        }
+
+        let template = document.getElementsByTagName('template')[0];
+        let levelDiv = template.content.querySelector(".level").cloneNode(true);
+        setEqualHeightWidth(levelDiv);
+        console.log(template.content.querySelector(".level"));
+        // levelDiv.style.height = levelDiv.style.width ;
+        console.log(levelDiv);
+
+        let CheckMarkIcon = template.content.querySelector(".CheckMarkIcon");
+        let starsIcon = template.content.querySelector(".starsIcon");
+        let axeIcon = template.content.querySelector(".axeIcon");
+
+
+        let starsNumer;
+
+        for (const item of levelsData) {
+            let newlevel = levelDiv.cloneNode(true);
+            newlevel.getElementsByClassName('score')[0].textContent = "score: " + item.score;
+            newlevel.getElementsByClassName('id')[0].textContent = "" + levelsData.indexOf(item);
+            document.body.appendChild(newlevel);
+            if (!item.locked) {
+                newlevel.getElementsByClassName('icon')[0].appendChild(CheckMarkIcon.cloneNode(true));
+
+            }
+            else {
+                newlevel.getElementsByClassName('icon')[0].appendChild(axeIcon.cloneNode(true));
+                newlevel.style.backgroundColor = "Silver";
+            }
+            if (item.score > 900) { starsNumer = 5; }
+            else if (item.score > 750) { starsNumer = 4; }
+            else if (item.score > 600) { starsNumer = 3; }
+            else {
+                starsNumer = 0;
+            }
+
+            for (let i = 0; i < starsNumer; i++) {
+                let newStar = starsIcon.cloneNode(true);
+                newlevel.getElementsByClassName('stars')[0].appendChild(newStar);
+
+            }
+            setEqualHeightWidth(newlevel);
+
+            console.log(newlevel);
+
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+</script>
+
+</body>
+
+</html>
