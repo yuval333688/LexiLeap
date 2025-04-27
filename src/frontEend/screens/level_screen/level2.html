@@ -16,7 +16,7 @@
         }
 
         .level {
-            background-color: lightcyan;
+            
             width: calc(20% - 10px);
 
             display: flex;
@@ -26,6 +26,21 @@
 
             cursor: pointer;
 
+        }
+        .level.locked{
+            background-color: Silver;
+        }
+        .level.open{
+            background-color: lightcyan;
+        }
+
+        .level.open.clicked{
+            background-color: SeaGreen;
+        }
+        
+        .level.open:hover {
+            transform: translateY(-10px); 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
         .level .icon {
@@ -102,7 +117,8 @@ fill = "Aquamarine"
 
 
 
-    <div class="level">
+    <div class="level" onclick="handleClick(this)">
+
         <div class="icon"> </div>
 
         <div class="id">7</div>
@@ -123,9 +139,30 @@ fill = "Aquamarine"
     }
     let levelsData = [];
 
-
-
-
+    function handleClick(element) {
+    // Toggle the clicked class for visual feedback
+    element.classList.toggle('clicked');
+    
+    // Only proceed with navigation if the level is open (not locked)
+    if (element.classList.contains('open')) {
+        // Get level information to pass to the typing screen
+        const levelId = element.querySelector('.id').textContent;
+        const levelScore = element.querySelector('.score').textContent;
+        
+        // Store level information in sessionStorage to access it on the typing screen
+        sessionStorage.setItem('selectedLevelId', levelId);
+        sessionStorage.setItem('selectedLevelScore', levelScore);
+        
+        // Add a small delay so the user can see the clicked state before navigation
+        setTimeout(() => {
+            // Navigate to the typing screen
+            window.location.href = '/src/frontEend/screens/typing_screen/typing_screen.html';
+        }, 300);
+    } else {
+        // If level is locked, show a message (optional)
+        alert('This level is locked. Complete previous levels to unlock.');
+    }
+}
     function setEqualHeightWidth(element) {
         const width = element.offsetWidth;
         element.style.height = width + 'px';
@@ -170,11 +207,14 @@ fill = "Aquamarine"
             document.body.appendChild(newlevel);
             if (!item.locked) {
                 newlevel.getElementsByClassName('icon')[0].appendChild(CheckMarkIcon.cloneNode(true));
+                newlevel.classList.add('open');
 
+                
             }
             else {
                 newlevel.getElementsByClassName('icon')[0].appendChild(axeIcon.cloneNode(true));
-                newlevel.style.backgroundColor = "Silver";
+                newlevel.classList.add('locked');
+
             }
             if (item.score > 900) { starsNumer = 5; }
             else if (item.score > 750) { starsNumer = 4; }
