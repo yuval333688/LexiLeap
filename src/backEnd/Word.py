@@ -1,3 +1,4 @@
+import pandas as pd
 from datetime import date
 
 class Word:
@@ -19,6 +20,9 @@ class Word:
     def __str__(self):
         return f"Word('{self._word}', Date Added: {self._date_to_add})"
     
+    def __repr__(self):
+        return f"{self._word}"
+
     def __len__(self):
         return len(self._word)
     
