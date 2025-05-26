@@ -65,15 +65,20 @@ def calculate_closenessByLevenshtein(correct_word, try_word):
 class Question:
     def __init__(self, word: Word):
         self.word = word
-        self.try_answer = ""
+        self.try_answer = " "
         self.levenshtein_distance = -1
         self.neighbors_distance = -1
         self.point = 0
         self.right = False
         
+    def __repr__(self):
+        return repr(self.word)  # or str(self.word) if you prefer a friendlier print
+
+    
+
     def ask_question(self):
         self.init_try_answer()
-        self.levenshtein_distance = calculate_closenessByLevenshtein(self.word.word, self.try_answer.strip())
+        self.levenshtein_distance = calculate_closenessByLevenshtein(self.word.get_word(), self.try_answer.strip())
         self.neighbors_distance = calculate_closenessByNeighboring(self.word.get_word(), self.try_answer)
         self.point = round((((self.levenshtein_distance / 3)) + ((2 * self.neighbors_distance / 3))) * 100, 1)
         if self.point == FINALS_CORRECT_WORD:
@@ -84,41 +89,13 @@ class Question:
 
     def __str__(self):
         return (
-            f"Word: {self.word.word}\n"
             f"  User Answer: {self.try_answer}\n"
             f"  Levenshtein Distance: {self.levenshtein_distance}\n"
             f"  Neighbor Distance: {self.neighbors_distance}\n"
             f"  Point: {round(self.point, 1)}\n"
             f"  Correct: {self.right}"
         )
+   
+    
 
-    def __init__(self, word: Word):
-        self.word = word
-        self.try_answer = ""
-        self.levenshtein_distance = -1  # Initially, set it to -1
-        self.neighbors_distance = -1  # Initialize the neighbor distance
-        self.point = 0
-        self.right=False
-        
-    def ask_question(self):
-        self.init_try_answer()
-        """Prompts the user to enter an answer and checks how close it is."""
-        self.levenshtein_distance = calculate_closenessByLevenshtein(self.word.word, self.try_answer.strip())  # Calculate the Levenshtein distance
-        self.neighbors_distance = calculate_closenessByNeighboring(self.word.get_word(), self.try_answer)  # Calculate the neighbors distance (how many characters are typed with neighboring keys)
-        self.point = round((((self.levenshtein_distance / 3)) + ((2 * self.neighbors_distance / 3))) * 100, 1)
-        if self.point == FINALS_CORRECT_WORD:
-            self.right = True  # Fixed assignment
-
-      
-    def init_try_answer(self):
-        self.try_answer = input("Please enter your answer: ")
-        
-    def __str__(self):
-        return (
-            f"Word: {self.word.word}\n"
-            f"  User Answer: {self.try_answer}\n"
-          # f"  Levenshtein Distance: {self.levenshtein_distance}\n"
-          # f"  Neighbor Distance: {self.neighbors_distance}\n"
-            f"  Point: {round(self.point, 1)}\n"
-            f"  Correct: {self.right}"
-    )
+    
