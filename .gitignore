@@ -1,7 +1,15 @@
 **/worlds/
 **/allowed_codepoints.json
 **/generate_codepoints.js
+
 **/imgs
 src/tools/java/
 **/CODEOWNERS
 /venv
+
+
+
+rec/worlds/
+__pycache__/
+.vscode/
+.gitIgnore
