@@ -4,3 +4,4 @@
 **/imgs
 src/tools/java/
 **/CODEOWNERS
+/venv

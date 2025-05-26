@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simple test</title>
+</head>
+
+<body>
+    <h1>simple test</h1>
+    <p>Click the following link to see the response from the server:</p>
+    <button onclick="OnClick()">Click here</button>
+    <p id="response"></p>
+    <script>
+        function OnClick() {
+
+            fetch('https://127.0.0.1:5000/levels/get/25')
+                .then(function (response) {
+                    console.log(response);
+
+                    return response.text();
+                })
+                .then(function (data) {
+                    document.getElementById('response').innerText = data;
+                    console.log(data);
+                })
+                .catch(function (error) {
+                    console.error('There was an error!', error);
+                    document.getElementById('response').innerText = 'error: ' + error.message;
+                });
+        }
+    </script>
+
+</body>
+
+</html>
