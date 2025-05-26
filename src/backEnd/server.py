@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS
 import OpenSSL
 
-
+#fdgdfg
 app = Flask(__name__) # שנה את הנתיב בהתאם למיקום ה-static שלך
 CORS(app)
 
