@@ -1,12 +1,13 @@
-from flask import Flask, send_from_directory
+from flask import Flask, jsonify
 from flask_cors import CORS
-import OpenSSL
+#from src.api.lesson_api import getTestByNum_outside  # ✅ ADD THIS
+
 
 #fdgdfg
 app = Flask(__name__) # שנה את הנתיב בהתאם למיקום ה-static שלך
 CORS(app)
 
-@app.route("/")
+@app.route("/hi")
 def say_hi():
     return "hi"
 
@@ -18,6 +19,16 @@ def get_level(num):
     return str
 
 
+@app.route("/api/test/<int:test_num>")
+def get_test_words(test_num):
+    try:
+        words = getTestByNum_outside(test_num)
+        return jsonify(words)
+    except IndexError:
+        return jsonify({"error": "Test number out of range"}), 404
+
 if __name__ == '__main__':
-    ssl_context = ('certs/localhost+2.pem', 'certs/localhost+2-key.pem')
-    app.run(host='127.0.0.1', port=5000, ssl_context=ssl_context, debug=True)
+    ##ssl_context = ('certs/localhost+2.pem', 'certs/localhost+2-key.pem')
+    app.run(host='127.0.0.1', port=5000, debug=True)
+
+

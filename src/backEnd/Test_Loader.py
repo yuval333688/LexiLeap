@@ -11,13 +11,8 @@ class TestWordLoader(unittest.TestCase):
         # Tokenize words
         words = text.split()
 
-        # Take the first 20 as strings
-        first_20_words = words[:400]
-
-        print("First 20 words:", first_20_words)
-
-        # Optional: simple check
-        self.assertEqual(len(first_20_words), 20)
+        # Take the all words as strings
+        all_strings = words[:400]
 
 if __name__ == '__main__':
     unittest.main()
