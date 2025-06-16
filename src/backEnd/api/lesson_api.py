@@ -1,4 +1,4 @@
-from Lesson import Lesson
+from src.backEnd.models.Lesson import Lesson
 
 # Create the Lesson only once
 lesson_instance = Lesson()

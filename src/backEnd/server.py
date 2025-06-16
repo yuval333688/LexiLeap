@@ -1,5 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+from api.Teacher_api import teacher_api  # ✅ You already imported this
+
 #from src.api.lesson_api import getTestByNum_outside  # ✅ ADD THIS
 
 
@@ -10,6 +12,9 @@ CORS(app)
 @app.route("/hi")
 def say_hi():
     return "hi"
+
+# Register your blueprint AFTER app is created
+app.register_blueprint(teacher_api, url_prefix="/api/teacher")
 
 @app.route("/levels/get/<int:num>")
 def get_level(num):

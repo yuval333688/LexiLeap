@@ -1,0 +1,5 @@
+dbname=learning_progress_db
+user=postgres
+password=yuval1407
+host=localhost
+port=5432

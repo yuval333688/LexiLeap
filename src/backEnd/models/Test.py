@@ -1,18 +1,18 @@
-from src.backEnd.word_similarity import Question
+from src.backEnd.models.Word import Word
 import unittest
 
 FINALS_QUESTION_SESSIONS = 20
 
 class Test:
         _test_counter = 0  # Class variable to ensure unique test codes
-        def __init__(self,words):
+        def __init__(self,words:list):
             self.test_code=Test._test_counter
             Test._test_counter+=1
-            self.questions = [Question(word) for word in words]
+            self.words = words
             self.total_score = 0
 
         def conduct_test(self):
-            print("Starting the test...\n")
+          ##  print("Starting the test...\n")
             for i, question in enumerate(self.questions, start=1):
                 ##print(f"Question {i}:")
                 question.ask_question()
@@ -35,3 +35,4 @@ class Test:
             print(f"Average Score: {results['average_score']:.2f}")
             print(f"Correct Answers: {results['correct_answers']}")
             print(f"Wrong Answers: {results['wrong_answers']}")
+            

@@ -1,6 +1,6 @@
 from pathlib import Path
 import sys,pandas as pd
-from src.backEnd.Word import Word  # adjust this import if needed!
+from src.backEnd.models.Word import Word  # adjust this import if needed!
 from setuptools import setup, find_packages
 
 
@@ -15,7 +15,7 @@ setup(
 # Add the project root (LexiLeap) to sys.path
 sys.path.append(str(Path(__file__).resolve().parents[2]))
 
-from src.backEnd.Word import Word
+from src.backEnd.models.Word import Word
 
 
 def load_words_from_csv():

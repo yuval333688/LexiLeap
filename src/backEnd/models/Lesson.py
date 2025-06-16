@@ -1,13 +1,13 @@
 from datetime import datetime,time
-from Test import Test
+from src.backEnd.models.Test import Test
 import pandas as pd
-from src.backEnd.Word import Word
+from src.backEnd.models.Word import Word
 import json
-FINALS_TESTS_NUM = 20
+FINALS_TESTS_NUM = 19
 FINALS_WORDS_IN_TEST=20
 class Lesson:
- _test_counter = 0  # Class variable to ensure unique test codes
- def __init__(self):
+ _lesson_counter = 1  # Class variable to ensure unique test codes
+ def __init__(self,sudent_id):
             file_path = r"C:\Users\User\OneDrive\שולחן העבודה\Work\פרויקט גמר\tamp\LexiLeap\rec\worlds\lesson3.txt"
             # Read the file
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -15,9 +15,10 @@ class Lesson:
                 # Tokenize words
             words = text.split()
             # Take the all words as strings
-            self.all_strings = words[:400]
-            self.test_level = Lesson._test_counter
-            Lesson._test_counter += 1
+            self.all_strings = words[:FINALS_TESTS_NUM * FINALS_WORDS_IN_TEST]  
+            self.student_lesson = sudent_id 
+            Lesson.lesson_serial_num= Lesson._lesson_counter
+            Lesson._lesson_counter += 1
             self.tests = []##array of all tests
             self.setLesson()
         
@@ -25,14 +26,13 @@ class Lesson:
         for i_test in range(FINALS_TESTS_NUM):
             words_for_test=[]
             for i_words in range(FINALS_WORDS_IN_TEST):
-                word_index = self.test_level + i_test * FINALS_WORDS_IN_TEST+i_words
+                word_index = i_test * FINALS_WORDS_IN_TEST+i_words
                 if word_index >= len(self.all_strings):
                     break
-                temp_word = Word(self.all_strings[word_index])
-                words_for_test.append(temp_word)
-            temp_test=Test(words_for_test)
-            self.tests.append(temp_test)
-
+                word_str = self.all_strings[word_index]
+                words_for_test.append(Word(word_str))
+            self.tests.append(Test(words=words_for_test))
+            
  def getTestByNum(self,test_num: int):
         """Returns list of words from the test as JSON"""
         test = self.tests[test_num - 1]

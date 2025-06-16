@@ -1,7 +1,10 @@
-from Word import Word
+import pandas as pd
+from datetime import date
 import Levenshtein
+
 FINALS_WRONG_CHAR = -10 
 FINALS_CORRECT_WORD = 100
+FINALS_NON_ALPHABETIC ='$'
 # Define a 26x26 matrix for the distance between any two characters
 keyboard_distance = {
                     ('a', 'a'):0, ('a', 'b'):5, ('a', 'c'):3, ('a', 'd'):2, ('a', 'e'):2, ('a', 'f'):3, ('a', 'g'):4 ,('a', 'h'):5,('a', 'i'):7,('a', 'j'):6,('a', 'k'):7,('a', 'l'):8,('a', 'm'):7,('a', 'n'):6,('a', 'o'):8,('a', 'p'):9,('a', 'q'):1,('a', 'r'):3,('a', 's'):1,('a', 't'):4,('a', 'u'):6,('a', 'v'):4,('a', 'w'):1,('a', 'x'):2,('a', 'y'):5,('a', 'z'):1,                
@@ -32,70 +35,67 @@ keyboard_distance = {
                     ('z', 'z'):0
                 }
 
-# Function to calculate the "neighbor distance" based on the custom matrix
-def get_keyboard_distance(char1, char2):
-    char1 = char1.lower()
-    uniOfChar1=ord(char1)
-    char2 = char2.lower()
-    uniOfChar2=ord(char2)
-    if  (uniOfChar1<uniOfChar2):
-        return 10-keyboard_distance.get((char1, char2),FINALS_WRONG_CHAR) 
-    return 10-keyboard_distance.get((char2, char1),FINALS_WRONG_CHAR) 
 
-def calculate_closenessByNeighboring(correct_word, try_word):
-    sumNeighborsPoints=len(correct_word) - len(try_word)
-    min_len = min(len(correct_word), len(try_word))
+def input_word(new_word: str) -> str:
+    # Replace each non-letter character with '$'
+    cleaned_word = ''.join(c if c.isalpha() else '$' for c in new_word)
+    return cleaned_word
+
+class Word:
+    def __init__(self, word: str):
+        self._word = input_word(word)  # underscore for conventionally private variable
+        self.date_to_add = date.today()
+
+    def get_word(self):
+        return self.word
+    
+    def set_word(self, new_word):
+        self.word = new_word  # calls the setter logic above
+
+    def __str__(self):
+        return self._word
+    
+    def __repr__(self):
+        return f"{self._word}"
+
+    def __len__(self):
+        return len(self._word)
+
+
+# Function to calculate the "neighbor distance" based on the custom matrix
+def get_keyboard_distance(char1:str, char2: str):
+    if (char1==FINALS_NON_ALPHABETIC or char2==FINALS_NON_ALPHABETIC):
+        return 0
+    uniOfChar1=ord(char1.lower()) 
+    uniOfChar2=ord(char2.lower())
+    if  (uniOfChar1<uniOfChar2):
+        return 10-keyboard_distance.get(char1, char2) 
+    return 10-keyboard_distance.get(char2, char1) 
+
+def calculate_closenessByNeighboring(correct_word: Word, try_word:Word):
+    s_correct_word=str(correct_word)
+    s_try_word=str(try_word)
+    sumNeighborsPoints=len(s_correct_word) - len(s_try_word)
+    min_len = min(len(s_correct_word), len(s_try_word))
       # Compare character by character up to the length of the shorter word
     for i in range(min_len):
-       distance = get_keyboard_distance(correct_word[i], try_word[i])
+       distance = get_keyboard_distance(s_correct_word[i], s_try_word[i])
        sumNeighborsPoints += distance
     return  calculate_point_For_Question(correct_word,sumNeighborsPoints)
    
-def calculate_point_For_Question(correct_word,point_For_Word):
-    return float((point_For_Word/(len(correct_word)*10)))
+def calculate_point_For_Question(correct_word:Word,point_For_Word:int):
+    return float(point_For_Word(len(str(correct_word))*10))
 
-def calculate_closenessByLevenshtein(correct_word, try_word):
-    distance = Levenshtein.distance(correct_word, try_word)
-    max_len = max(len(correct_word), len(try_word))
+def calculate_closenessByLevenshtein(true_word:Word, try_word:Word):
+    distance = Levenshtein.distance(str(true_word), str(try_word))
+    max_len = max(len(true_word), len(try_word))
     closeness = float(distance) if max_len == 0 else float(distance) / float(max_len)
     return float((10 - closeness) / 10)
 
 
+def score(true_word:Word,try_word:Word):
+    levenshtein_distance = calculate_closenessByLevenshtein(true_word,try_word)
+    neighbors_distance = calculate_closenessByNeighboring(true_word,try_word)
+    point = round((((levenshtein_distance / 3)) + ((2 * neighbors_distance / 3))) * 100, 1)
+    return point
 
-class Question:
-    def __init__(self, word: Word):
-        self.word = word
-        self.try_answer = " "
-        self.levenshtein_distance = -1
-        self.neighbors_distance = -1
-        self.point = 0
-        self.right = False
-        
-    def __repr__(self):
-        return repr(self.word)  # or str(self.word) if you prefer a friendlier print
-
-    
-
-    def ask_question(self):
-        self.init_try_answer()
-        self.levenshtein_distance = calculate_closenessByLevenshtein(self.word.get_word(), self.try_answer.strip())
-        self.neighbors_distance = calculate_closenessByNeighboring(self.word.get_word(), self.try_answer)
-        self.point = round((((self.levenshtein_distance / 3)) + ((2 * self.neighbors_distance / 3))) * 100, 1)
-        if self.point == FINALS_CORRECT_WORD:
-            self.right = True
-
-    def init_try_answer(self):
-        self.try_answer = input("Please enter your answer: ")
-
-    def __str__(self):
-        return (
-            f"  User Answer: {self.try_answer}\n"
-            f"  Levenshtein Distance: {self.levenshtein_distance}\n"
-            f"  Neighbor Distance: {self.neighbors_distance}\n"
-            f"  Point: {round(self.point, 1)}\n"
-            f"  Correct: {self.right}"
-        )
-   
-    
-
-    

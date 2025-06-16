@@ -1,5 +1,6 @@
 import unicodedata
 from datetime import datetime
+from src.backEnd.models.Roles import UserRole
 
 FINALS_NUM_OF_TRIES = 4 
 FINALS_ID_LENGTH = 9
@@ -12,50 +13,55 @@ def inputName(label: str)->str:
     return input(f"Enter your {label}: ")
 
 class User:
-    # Dynamically build the allowed characters from Unicode ranges
-    lowercase_chars = [chr(i) for i in range(97, 123)]  # a-z
+    _user_counter = 0
     uppercase_chars = [chr(i) for i in range(65, 91)]   # A-Z
     digit_chars     = [chr(i) for i in range(48, 58)]   # 0-9
 
     # Choose 10 characters total (customize this however you like)
-    ALLOWED_CHARACTERS = ''.join(lowercase_chars+ digit_chars + uppercase_chars[:4])  # 3+3+4 = 10 chars
+    ##ALLOWED_CHARACTERS = ''.join(lowercase_chars+ digit_chars + uppercase_chars[:4])  # 3+3+4 = 10 chars
 
-    def __init__(self):
-        self.promptUserPassword()
-        self.setUserFirstName()
-        self.setUserLastName()
-        self.promptUserID()
+    def __init__(self,user_password:str, role: UserRole,user_first_name:str,user_last_name:str,user_ID:int):
+        # Try setting the password using a tester method
+        self.role = role
+        self.passwordTester(user_password)
+        self.setUserFirstName(user_first_name)
+        self.setUserLastName(user_last_name)
+        self.promptUserID(user_ID)
         self.promptUserDateOfBirth()
         self.date_registered = datetime.now()
-        self.user_name = getUserNameBySystem()
-      
-    def promptUserPassword(self):
-        print("Please enter a password that meets the following rules:")
-        print("- Exactly 9 characters long")
-        print("- Must include at least one lowercase [a-z], one uppercase [A-Z], and at least one digit [0-9]")
-        numOfAttempt=0
-        while(numOfAttempt<FINALS_NUM_OF_TRIES):
-            password_input = input("Enter your password: ")
+        self.user_name = self.getUserNameBySystem()
+        self.user_uniqe_code_name=User._user_counter
+        User._test_counter+=1
+
+    def getUserNameBySystem(self):
+        first_name = self.getUserFirstName()
+        last_name = self.getUserLastName()
+        counter = User._user_counter
+        return f"{first_name}{last_name[0].upper()}{counter}" 
+
+    def passwordTester(self,new_password:str):
+        numOfAttempt = 0
+        while numOfAttempt < FINALS_NUM_OF_TRIES:
             try:
-                self.setUserPassword(password_input)
+                self.setUserPassword(new_password)
                 print("✅ Password set successfully!\n")
-                break
+                return  # Exit after successful set
             except ValueError as e:
                 print("❌", e)
                 print("Please try again.\n")
-                numOfAttempt+=1
-        if(numOfAttempt>=FINALS_NUM_OF_TRIES):
-            print("❌ Maximum number of attempts reached.")
-           
-    
+                new_password = input("Enter your password: ")
+                numOfAttempt += 1
+        print("❌ Maximum number of attempts reached.")
+        raise ValueError("Failed to set a valid password.")
+
+   
     def setUserPassword(self, new_password: str):
         if not self._is_valid_password(new_password):
             raise ValueError(
-                f"Invalid password: must be 9 characters long, include at least one uppercase letter, "
-                f"one lowercase letter, one digit, and only use allowed characters:"
+                "Invalid password: must be 9 characters long, include at least one uppercase letter, "
+                "one lowercase letter, one digit, and only use allowed characters."
             )
         self.user_password = new_password
- 
   
     def _is_valid_password(self, password: str) -> bool:
         num_of_wrongs=0
@@ -89,13 +95,10 @@ class User:
              print("there is not upper case chars!")
         return has_upper
     
-    def testUserPasswordLowercase(self,password)->bool:
-        has_lower = any(97 <= ord(char) <= 122 for char in password)    # a-z
-        if (has_lower):
-            print("there is lower case chars")
-        else:
-             print("there is not lower case chars!")
-        return has_lower
+    def testUserPasswordLowercase(self, password: str) -> bool:
+        lowercase_chars = [chr(i) for i in range(97, 123)]  # a-z
+        return any(c in lowercase_chars for c in password)
+
 
     def testUserPasswordSpecielDigit(self,password)->bool:
         has_digit = any(48 <= ord(char) <= 57 for char in password)     # 0-9
@@ -136,10 +139,10 @@ class User:
             else:
                 return False
         return True
-
-def promptUserDateOfBirth(self):
-    num_of_tries = FINALS_NUM_OF_TRIES
-    while num_of_tries > 0:
+    
+    def promptUserDateOfBirth(self):
+     num_of_tries = FINALS_NUM_OF_TRIES
+     while num_of_tries > 0:
         dob_input = input("Enter your date of birth (YYYY-MM-DD): ")
         try:
             self.date_of_birth = datetime.strptime(dob_input, "%Y-%m-%d").date()
@@ -153,10 +156,9 @@ def promptUserDateOfBirth(self):
             else:
                 print("❌ Maximum number of attempts reached.\n")
 
-
-def inputUserID(self) -> int:
-    num_of_tries = FINALS_NUM_OF_TRIES
-    while num_of_tries > 0:
+    def inputUserID(self) -> int:
+     num_of_tries = FINALS_NUM_OF_TRIES
+     while num_of_tries > 0:
         user_id_input = input(f"Enter your ID ({FINALS_ID_LENGTH} digits): ")
         try:
             user_ID = int(user_id_input)
@@ -172,30 +174,26 @@ def inputUserID(self) -> int:
                 print(f"Tries remaining: {num_of_tries}\n")
             else:
                 print("❌ Maximum number of attempts reached.\n")
-    raise ValueError("Failed to input a valid ID after several attempts.")
-
-def setUserID(self, user_ID: int):
-    self.user_ID = user_ID
-
-def _is_valid_ID(self, user_ID: int) -> bool:
-    user_ID_str = str(user_ID)
-    return user_ID_str.isdigit() and len(user_ID_str) == FINALS_ID_LENGTH
-
-def getUserNameBySystem(self) -> str:
-    first_name = self.getUserFirstName()
-    last_name = self.getUserLastName()
-    year_of_birth = self.date_of_birth.year
-
-    # Normalize the name: remove spaces/hyphens/apostrophes and lowercase
-    normalized = f"{first_name}{last_name}".replace(" ", "").replace("-", "").replace("'", "").lower()
-    return f"{normalized}{year_of_birth}"
-
-
-
-def __str__(self):
+                raise ValueError("Failed to input a valid ID after several attempts.")
+    
+    def setUserID(self, user_ID: int):
+     self.user_ID = user_ID
+     
+     
+    def _is_valid_ID(self, user_ID: int) -> bool:
+     user_ID_str = str(user_ID)
+     return user_ID_str.isdigit() and len(user_ID_str) == FINALS_ID_LENGTH
+     # Normalize the name: remove spaces/hyphens/apostrophes and lowercase
+     normalized = f"{first_name}{last_name}".replace(" ", "").replace("-", "").replace("'", "").lower()
+     return f"{normalized}{year_of_birth}"
+   
+      
+    def __str__(self):
         return (f"Username: {self.user_name}\n"
                 f"First Name: {self.first_name}\n"
                 f"Last Name: {self.last_name}\n"
                 f"User ID: {self.user_ID}\n"
                 f"Date of Birth: {self.date_of_birth}\n"
                 f"Date Registered: {self.date_registered.strftime('%Y-%m-%d %H:%M:%S')}")
+    
+   
