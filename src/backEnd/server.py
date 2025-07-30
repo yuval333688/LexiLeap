@@ -9,9 +9,9 @@ from api.Teacher_api import teacher_api  # ✅ You already imported this
 app = Flask(__name__) # שנה את הנתיב בהתאם למיקום ה-static שלך
 CORS(app)
 
-@app.route("/hi")
+@app.route("/Im Coding!")
 def say_hi():
-    return "hi"
+    return "Hey, Im coding "
 
 # Register your blueprint AFTER app is created
 app.register_blueprint(teacher_api, url_prefix="/api/teacher")
