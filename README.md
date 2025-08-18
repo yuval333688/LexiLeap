@@ -127,7 +127,7 @@ The backend has CORS enabled for local development so the frontend can call it f
 
 * **Frontend**: vanilla HTML/CSS/JS, Web Speech API for pronunciation.
 * **Backend**: Flask with CORS; Postgres for scores/locks.
-* **Data model**: `public (id SERIAL, score INT, locked BOOLEAN)`.
+* **Data model**: `lessens (id SERIAL, score INT, locked BOOLEAN)`.
 
 
 
