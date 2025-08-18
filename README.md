@@ -127,13 +127,7 @@ The backend has CORS enabled for local development so the frontend can call it f
 
 * **Frontend**: vanilla HTML/CSS/JS, Web Speech API for pronunciation.
 * **Backend**: Flask with CORS; Postgres for scores/locks.
-* **Data model**: `public.lessons (id SERIAL, score INT, locked BOOLEAN)`.
+* **Data model**: `public (id SERIAL, score INT, locked BOOLEAN)`.
 
----
 
-## Roadmap (Nice-to-Have)
 
-* Per-user profiles and score history
-* Backspace/error-recovery modes
-* Multi-voice selection and adjustable speech rate
-* Environment-based configuration for DB and CORS
