@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Typing Practice</title>
+    <link rel="stylesheet" href="screen2.css">
+</head>
+<body>
+    <div class="container">
+        <h1>English Typing Practice</h1>
+        
+        <div class="Performance">
+            <div>
+                <div>
+                    time
+                </div>
+                <div id="id_time">
+                    00:00
+                </div>
+            </div>
+
+
+            <div>
+                <div>
+                    accuracy
+                </div>
+                <div id="id_accuracy">
+                    0%
+                </div>
+            </div>
+
+            <div>
+                <div>
+                    speed
+                </div>
+                <div id="id_speed">
+                    0 w/m
+                </div>
+            </div>
+        </div>
+
+        <button id= "id_start_exercise_button"            onclick ="start_exercise()"            >Start Exercise</button>
+        <div    id= "id_display_sentence"                             ></div>
+       
+        <button id= "id_stop_button"           style="display: none;"onclick ="stop()">stop</button>
+        <button id= "id_pause_button"          style="display: none;"onclick ="pause()" >pause</button> 
+        <button id= "id_start_button"          style="display: none;"onclick ="start()" >start</button>
+        <button id= "id_replay_word_button"    style="display: none;"onclick ="replayWord()" >replay word</button>
+    </div>
+    <script src="../api.js"></script>
+    <script src="../timer.js"></script>
+    <script src="../utility.js"></script>
+    <script src="screen2.js"></script>
+</body>
+</html>
